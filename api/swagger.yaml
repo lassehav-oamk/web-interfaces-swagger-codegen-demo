@@ -1,0 +1,89 @@
+openapi: 3.0.1
+info:
+  title: Simple Weather API for reading weather in all cities and in a single city
+  description: Weather API Demo
+  contact:
+    email: lasse.haverinen@oamk.fi
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/lassehav_oamk/WeatherDemo/1.0.0
+  description: SwaggerHub API Auto Mocking
+paths:
+  /weather:
+    get:
+      summary: Get a list of cities with current weather info
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      operationId: getAllWeathers
+      responses:
+        "200":
+          description: Cities with weather information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CityWeather'
+                x-content-type: application/json
+        "400":
+          description: bad input parameter
+      x-swagger-router-controller: Default
+  /weather/{cityId}:
+    get:
+      summary: Get current weather in a single city identified by cityId paramter
+      operationId: getSingleCityWeather
+      parameters:
+      - name: cityId
+        in: path
+        description: Unique city code identifier
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CityWeather'
+      x-swagger-router-controller: Default
+  /test:
+    get:
+      summary: test
+      operationId: testOp
+      responses:
+        "200":
+          description: Successful test
+      x-swagger-router-controller: Default
+components:
+  schemas:
+    CityWeather:
+      required:
+      - cityCode
+      - cityName
+      - temperature
+      type: object
+      properties:
+        cityCode:
+          type: string
+          description: Unique city identifier
+          example: sv2-12r-fss-vx2
+        cityName:
+          type: string
+          description: Name of the city
+          example: London
+        temperature:
+          type: number
+          description: Temperature in Celsius degrees
+          format: float
+          example: 24.5
+      example:
+        cityName: London
+        cityCode: sv2-12r-fss-vx2
+        temperature: 24.5
